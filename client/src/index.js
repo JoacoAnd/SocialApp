@@ -5,7 +5,7 @@ import App from './App';
 
 /* Redux */
 import authReducer from './state';
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -15,19 +15,18 @@ const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => {
+  middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware({
       serializableCheck: {
-        ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
       }
     })
-  }
 })
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider>
+    <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
         <App />
       </PersistGate>
